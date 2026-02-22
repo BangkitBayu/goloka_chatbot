@@ -1,14 +1,18 @@
 import makeWASocket, {
   useMultiFileAuthState,
   DisconnectReason,
+  delay,
 } from "@whiskeysockets/baileys";
 
 import pino from "pino";
-import { readCsv } from "./utils/read_csv.js";
+import { readCsv } from "./utils/readCsv.js";
+import contactFormat from "./utils/contactFormat.js";
 // import qrcode from "qrcode-terminal";
 
 // Baca file template csv
-const templates = await readCsv("./documents/chat_templates.csv" , "utf-8");
+const templates = await readCsv("./documents/chat_templates.csv", "utf-8");
+
+const contacts = await readCsv("./documents/contact.csv", "utf-8");
 
 // Untuk menampung chat yang sudah direply agar tidak execute pesan yang sama berkali kali
 let repliesHistory = new Set();
@@ -72,14 +76,20 @@ async function startBot() {
           (row) => row.name == "send_promotion",
         );
 
-        // console.log(send_promotion)
-
-        for (const row of send_promotion) {
-          const recipient = "6285813385224@s.whatsapp.net";
-          await sock.sendMessage(recipient, {
-            text: row.text.replace(/\[Nama Toko\]/g, "*Goloka Store*"),
-          });
-          console.log("terkirim");
+        for (const tem of send_promotion) {
+          for (const row of contacts) {
+            try {
+              const recipient = `${contactFormat(row.phone)}@s.whatsapp.net`;
+              await sock.sendMessage(recipient, {
+                text: tem.text.replace(/\[Nama Toko\]/g, `*${row.name}*`),
+              });
+              console.log("terkirim");
+              delay(5000);
+            } catch (error) {
+              console.log("Error:", error);
+            }
+            // console.log("Tersimpan");
+          }
         }
       } catch (error) {
         console.log(error);
