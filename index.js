@@ -5,9 +5,10 @@ import makeWASocket, {
 
 import pino from "pino";
 import { readCsv } from "./utils/read_csv.js";
+// import qrcode from "qrcode-terminal";
 
 // Baca file template csv
-const templates = await readCsv("./documents/chat_templates.csv");
+const templates = await readCsv("./documents/chat_templates.csv" , "utf-8");
 
 // Untuk menampung chat yang sudah direply agar tidak execute pesan yang sama berkali kali
 let repliesHistory = new Set();
@@ -23,7 +24,7 @@ async function startBot() {
   const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
   const sock = makeWASocket({
     auth: state,
-    printQRInTerminal: false,
+    // printQRInTerminal: true,
     logger: pino({ level: "info" }),
     browser: ["Windows", "Chrome", "144.0.7559.135"],
   });
@@ -31,7 +32,28 @@ async function startBot() {
   sock.ev.on("creds.update", saveCreds);
 
   sock.ev.on("connection.update", async (update) => {
-    const { connection, lastDisconnect, qr } = update;
+    const { connection, lastDisconnect } = update;
+
+    // if (qr) {
+    //   console.log("Scan QR Code berikut:");
+    //   qrcode.generate(qr, { small: true });
+    // }
+
+    if (connection === "connecting") {
+      if (!sock.authState.creds.registered) {
+        console.log("pairing code");
+        try {
+          setTimeout(async () => {
+            let code = await sock.requestPairingCode("6288994140379");
+            console.log("Pairing code:", code);
+          }, 3000);
+          console.log("Requesting pairing code ...");
+        } catch (error) {
+          console.log("Failed to request pairing code:", error);
+        }
+      }
+    }
+
     if (connection === "close") {
       const shouldReconnect =
         lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut;
@@ -94,12 +116,12 @@ async function startBot() {
                   url: imagePath,
                 },
                 caption:
-                "Berikut ini adalah brosur dari program Goloka, untuk pendaftaran program dan info lebih lanjut, silahkan hubungi tim kami: *Rangga Pratama Putra:6285189081947*. Terimakasih atas waktu dan perhatian anda😊🙏",
+                  "Berikut ini adalah brosur dari program Goloka, untuk pendaftaran program dan info lebih lanjut, silahkan hubungi tim kami: *Rangga Pratama Putra:6285189081947*. Terimakasih atas waktu dan perhatian anda😊🙏",
               });
               // console.log("replyy");
             } else {
               const text =
-              "Silahkan balas *MAU* untuk info lebih lanjut dari program Goloka dan anda akan segera terhubung dengan tim kami. Terimkasih atas waktu dan perhatian anda😊🙏.";
+                "Silahkan balas *MAU* untuk info lebih lanjut dari program Goloka dan anda akan segera terhubung dengan tim kami. Terimkasih atas waktu dan perhatian anda😊🙏.";
               await sock.sendMessage(sender, {
                 text: text,
               });
@@ -110,18 +132,6 @@ async function startBot() {
         }
       }
     });
-
-    if (!sock.authState.creds.registered && connection === "connecting") {
-      try {
-        setTimeout(async () => {
-          let code = await sock.requestPairingCode("6288994140379");
-          console.log("Pairing code:", code);
-        }, 3000);
-        console.log("Requesting pairing code ...");
-      } catch (error) {
-        console.log("Failed to request pairing code:", error);
-      }
-    }
   });
 }
 

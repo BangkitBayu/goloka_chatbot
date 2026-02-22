@@ -7,11 +7,15 @@ import fs from "fs";
  * @param {string} path
  */
 
-async function readCsv(path) {
+async function readCsv(path , encoding) {
   const results = [];
   return new Promise((resolve, rejects) => {
-    fs.createReadStream(path, { encoding: "utf-8" })
-      .pipe(csvParser())
+    fs.createReadStream(path, { encoding: encoding })
+      .pipe(
+        csvParser({
+          mapHeaders: ({ header, index }) => header.toLowerCase(),
+        }),
+      )
       .on("data", (data) => results.push(data))
       .on("end", () => {
         resolve(results);
