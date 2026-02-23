@@ -9,6 +9,15 @@ import { readCsv } from "./utils/readCsv.js";
 import contactFormat from "./utils/contactFormat.js";
 // import qrcode from "qrcode-terminal";
 
+// async function saveToHistory(name, no) {
+//   const jsonData = JSON.stringify({ name, no }, null, 2);
+//   try {
+//     fs.appendFile("./broadcastHistory.json", jsonData);
+//   } catch (error) {
+//     console.log("Error:", error);
+//   }
+// }
+
 // Baca file template csv
 const templates = await readCsv("./documents/chat_templates.csv", "utf-8");
 
@@ -80,15 +89,15 @@ async function startBot() {
           for (const row of contacts) {
             try {
               const recipient = `${contactFormat(row.phone)}@s.whatsapp.net`;
+
               await sock.sendMessage(recipient, {
                 text: tem.text.replace(/\[Nama Toko\]/g, `*${row.name}*`),
               });
-              console.log("terkirim");
-              delay(5000);
+
+              await delay(10000);
             } catch (error) {
               console.log("Error:", error);
             }
-            // console.log("Tersimpan");
           }
         }
       } catch (error) {
@@ -117,7 +126,6 @@ async function startBot() {
               `Received message from ${sender}: ${reply}, id: ${message.key.id}`,
             );
 
-            // if (!sender.endsWith("@g.us")) {
             // Handle recipient mengirim mau
             if (reply?.toLowerCase() === "mau" || reply?.includes("mau")) {
               const imagePath = "./media/img/brosur.jpg";
