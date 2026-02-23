@@ -7,16 +7,6 @@ import makeWASocket, {
 import pino from "pino";
 import { readCsv } from "./utils/readCsv.js";
 import contactFormat from "./utils/contactFormat.js";
-// import qrcode from "qrcode-terminal";
-
-// async function saveToHistory(name, no) {
-//   const jsonData = JSON.stringify({ name, no }, null, 2);
-//   try {
-//     fs.appendFile("./broadcastHistory.json", jsonData);
-//   } catch (error) {
-//     console.log("Error:", error);
-//   }
-// }
 
 // Baca file template csv
 const templates = await readCsv("./documents/chat_templates.csv", "utf-8");
@@ -37,7 +27,6 @@ async function startBot() {
   const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
   const sock = makeWASocket({
     auth: state,
-    // printQRInTerminal: true,
     logger: pino({ level: "info" }),
     browser: ["Windows", "Chrome", "144.0.7559.135"],
   });
@@ -46,11 +35,6 @@ async function startBot() {
 
   sock.ev.on("connection.update", async (update) => {
     const { connection, lastDisconnect } = update;
-
-    // if (qr) {
-    //   console.log("Scan QR Code berikut:");
-    //   qrcode.generate(qr, { small: true });
-    // }
 
     if (connection === "connecting") {
       if (!sock.authState.creds.registered) {
@@ -88,13 +72,14 @@ async function startBot() {
         for (const tem of send_promotion) {
           for (const row of contacts) {
             try {
+              const randomDelay = Math.floor(Math.random() * 30000) + 2000
               const recipient = `${contactFormat(row.phone)}@s.whatsapp.net`;
 
               await sock.sendMessage(recipient, {
                 text: tem.text.replace(/\[Nama Toko\]/g, `*${row.name}*`),
               });
 
-              await delay(10000);
+              await delay(randomDelay);
             } catch (error) {
               console.log("Error:", error);
             }
