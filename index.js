@@ -11,6 +11,7 @@ import contactFormat from "./utils/contactFormat.js";
 // Baca file template csv
 const templates = await readCsv("./documents/chat_templates.csv", "utf-8");
 
+// Baca file contact/database dengan format csv
 const contacts = await readCsv("./documents/contact.csv", "utf-8");
 
 // Untuk menampung chat yang sudah direply agar tidak execute pesan yang sama berkali kali
@@ -62,8 +63,6 @@ async function startBot() {
       console.log("Connection opened");
 
       try {
-        // console.log(templates);
-
         // Ambil template send promosi
         const send_promotion = templates.filter(
           (row) => row.name == "send_promotion",
@@ -72,7 +71,7 @@ async function startBot() {
         for (const tem of send_promotion) {
           for (const row of contacts) {
             try {
-              const randomDelay = Math.floor(Math.random() * 30000) + 2000
+              const randomDelay = Math.floor(Math.random() * 30000) + 2000;
               const recipient = `${contactFormat(row.phone)}@s.whatsapp.net`;
 
               await sock.sendMessage(recipient, {
@@ -121,16 +120,13 @@ async function startBot() {
                 caption:
                   "Berikut ini adalah brosur dari program Goloka, untuk pendaftaran program dan info lebih lanjut, silahkan hubungi tim kami: *Rangga Pratama Putra:6285189081947*. Terimakasih atas waktu dan perhatian anda😊🙏",
               });
-              // console.log("replyy");
             } else {
               const text =
                 "Silahkan balas *MAU* untuk info lebih lanjut dari program Goloka dan anda akan segera terhubung dengan tim kami. Terimkasih atas waktu dan perhatian anda😊🙏.";
               await sock.sendMessage(sender, {
                 text: text,
               });
-              // console.log("replyy");
             }
-            // }
           }
         }
       }
