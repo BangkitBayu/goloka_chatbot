@@ -5,8 +5,8 @@ import makeWASocket, {
 } from "@whiskeysockets/baileys";
 
 import pino from "pino";
-import { readCsv } from "./utils/readCsv.js";
-import contactFormat from "./utils/contactFormat.js";
+import { readCsv } from "./utils/csvReader.js";
+import contactFormater from "./utils/contactFormater.js";
 
 // Baca file template csv
 const templates = await readCsv("./documents/chat_templates.csv", "utf-8");
@@ -72,7 +72,7 @@ async function startBot() {
           for (const row of contacts) {
             try {
               const randomDelay = Math.floor(Math.random() * 30000) + 2000;
-              const recipient = `${contactFormat(row.phone)}@s.whatsapp.net`;
+              const recipient = `${contactFormater(row.phone)}@s.whatsapp.net`;
 
               await sock.sendMessage(recipient, {
                 text: tem.text.replace(/\[Nama Toko\]/g, `*${row.name}*`),

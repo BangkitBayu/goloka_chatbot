@@ -1,4 +1,3 @@
-import { error } from "console";
 import csvParser from "csv-parser";
 import fs from "fs";
 
