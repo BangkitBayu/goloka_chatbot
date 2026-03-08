@@ -1,0 +1,1 @@
+console.log(typeof process.env.WA_NUMBER)

@@ -1,3 +1,6 @@
+import dotenv from "dotenv/config";
+const waNumber = process.env.WA_NUMBER;
+
 import makeWASocket, {
   useMultiFileAuthState,
   DisconnectReason,
@@ -29,7 +32,7 @@ async function startBot() {
   const sock = makeWASocket({
     auth: state,
     logger: pino({ level: "info" }),
-    browser: ["Windows", "Chrome", "144.0.7559.135"],
+    browser: ["Windows", "Chrome", "10.0"],
   });
 
   sock.ev.on("creds.update", saveCreds);
@@ -37,29 +40,15 @@ async function startBot() {
   sock.ev.on("connection.update", async (update) => {
     const { connection, lastDisconnect } = update;
 
-    if (connection === "connecting") {
-      if (!sock.authState.creds.registered) {
-        console.log("pairing code");
-        try {
-          setTimeout(async () => {
-            let code = await sock.requestPairingCode("6288994140379");
-            console.log("Pairing code:", code);
-          }, 3000);
-          console.log("Requesting pairing code ...");
-        } catch (error) {
-          console.log("Failed to request pairing code:", error);
-        }
-      }
-    }
-
     if (connection === "close") {
       const shouldReconnect =
         lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut;
       console.log(`Connection failed`);
       if (shouldReconnect) {
-        startBot();
+        startBot()
       }
-    } else if (connection === "open") {
+    }
+    if (connection === "open") {
       console.log("Connection opened");
 
       try {
@@ -86,6 +75,19 @@ async function startBot() {
         }
       } catch (error) {
         console.log(error);
+      }
+    }
+
+    if (connection === "connecting" && !sock.authState.creds.registered) {
+      console.log("pairing code");
+      try {
+        setTimeout(async () => {
+          let code = await sock.requestPairingCode(waNumber);
+          console.log("Pairing code:", code);
+        }, 3000);
+        console.log("Requesting pairing code ...");
+      } catch (error) {
+        console.log("Failed to request pairing code:", error);
       }
     }
     sock.ev.on("messages.upsert", async ({ messages, type }) => {
