@@ -20,7 +20,7 @@ export class CreateWhatsAppSession {
   async execute(
     userId: string,
     request: CreateSessionRequest,
-    onQr: (qr: string) => void,
+    onCode: (code: string) => void,
   ): Promise<CreateSessionResponse> {
     const user = await this.userRepository.findById(userId);
     if (!user) throw new NotFoundError('User');
@@ -38,11 +38,14 @@ export class CreateWhatsAppSession {
       phoneNumber: request.phoneNumber,
     });
 
+    const method = request.method || 'qr';
+
     // Initiate Baileys connection (non-blocking)
     this.whatsAppService.connectSession(
       session.id,
       request.phoneNumber,
-      onQr,
+      method,
+      onCode,
       async () => {
         await this.sessionRepository.updateStatus(session.id, 'CONNECTED');
       },

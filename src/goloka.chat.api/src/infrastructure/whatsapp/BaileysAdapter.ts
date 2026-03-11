@@ -3,6 +3,7 @@ import makeWASocket, {
   DisconnectReason,
   delay,
   WASocket,
+  fetchLatestBaileysVersion,
 } from '@whiskeysockets/baileys';
 import pino from 'pino';
 import path from 'path';
@@ -53,32 +54,66 @@ export class BaileysAdapter implements IWhatsAppService {
   async connectSession(
     sessionId: string,
     phoneNumber: string,
-    onQr: (qr: string) => void,
+    method: 'qr' | 'pairing',
+    onCode: (code: string) => void,
     onConnected: () => void,
   ): Promise<void> {
     const sessionPath = this.getSessionPath(sessionId);
     const { state, saveCreds } = await useMultiFileAuthState(sessionPath);
-
+    const { version, isLatest } = await fetchLatestBaileysVersion();
     const sock = makeWASocket({
+      version,
       auth: state,
-      logger: pino({ level: 'silent' }),
-      printQRInTerminal: false,
+      logger: pino({ level: "silent" }),
+      // WAJIB DI WINDOWS: Agar tidak dianggap bot/koneksi ilegal
+      browser: ["Windows", "Chrome", "110.0.5481.178"],
+      connectTimeoutMs: 60000,
+      defaultQueryTimeoutMs: 0,
+      keepAliveIntervalMs: 10000,
+      generateHighQualityLinkPreview: true,
     });
 
     this.sockets.set(sessionId, sock);
 
     sock.ev.on('creds.update', saveCreds);
 
+    let isSendPairingCode = false;
+
     sock.ev.on('connection.update', async (update) => {
       const { connection, lastDisconnect, qr } = update;
 
-      if (qr) {
+      if (method === 'qr' && qr) {
         logger.info({ sessionId }, 'QR code generated');
-        onQr(qr);
+        onCode(qr);
+      }
+
+      // Logic for pairing code
+      if (
+        method === 'pairing' &&
+        qr &&
+        !sock.authState.creds.registered &&
+        !isSendPairingCode
+      ) {
+        isSendPairingCode = true;
+        logger.info({ sessionId }, 'Socket ready, waiting for pairing code trigger...');
+
+        setTimeout(async () => {
+          try {
+            const cleanNumber = phoneNumber.replace(/\D/g, '');
+            logger.info({ sessionId, cleanNumber }, 'Requesting pairing code');
+            const code = await sock.requestPairingCode(cleanNumber);
+            console.log("code", code);
+            onCode(code);
+          } catch (error) {
+            logger.error({ sessionId, error }, 'Failed to get pairing code');
+            isSendPairingCode = false;
+          }
+        }, 10000); // Handshake delay
       }
 
       if (connection === 'open') {
         logger.info({ sessionId }, 'WhatsApp session connected');
+        isSendPairingCode = false;
         onConnected();
       }
 
@@ -87,12 +122,13 @@ export class BaileysAdapter implements IWhatsAppService {
         const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
 
         this.sockets.delete(sessionId);
+        isSendPairingCode = false;
         logger.warn({ sessionId, statusCode }, 'WhatsApp session closed');
 
         if (shouldReconnect) {
           logger.info({ sessionId }, 'Reconnecting in 5s...');
           await delay(5000);
-          this.connectSession(sessionId, phoneNumber, onQr, onConnected).catch((err) =>
+          this.connectSession(sessionId, phoneNumber, method, onCode, onConnected).catch((err) =>
             logger.error({ sessionId, err }, 'Reconnect failed'),
           );
         }

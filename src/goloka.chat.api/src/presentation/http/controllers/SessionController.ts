@@ -14,13 +14,13 @@ export class SessionController {
   create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const userId = req.user!.userId;
-      let qrCode: string | null = null;
+      let code: string | null = null;
 
-      const result = await this.createSession.execute(userId, req.body, (qr) => {
-        qrCode = qr;
+      const result = await this.createSession.execute(userId, req.body, (generatedCode) => {
+        code = generatedCode;
       });
 
-      res.status(201).json({ success: true, data: { ...result, qrCode } });
+      res.status(201).json({ success: true, data: { ...result, code } });
     } catch (error) {
       next(error);
     }

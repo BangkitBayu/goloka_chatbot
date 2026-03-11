@@ -26,13 +26,15 @@ export interface IWhatsAppService {
    * Triggers pairing code or QR code flow.
    * @param sessionId  - DB session ID
    * @param phoneNumber - Phone number to connect
-   * @param onQr        - Callback when QR code is available
+   * @param method      - Connection method ('qr' or 'pairing')
+   * @param onCode      - Callback when QR or Pairing code is available
    * @param onConnected - Callback when connected
    */
   connectSession(
     sessionId: string,
     phoneNumber: string,
-    onQr: (qr: string) => void,
+    method: 'qr' | 'pairing',
+    onCode: (code: string) => void,
     onConnected: () => void,
   ): Promise<void>;
 

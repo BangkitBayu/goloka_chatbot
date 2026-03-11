@@ -54,6 +54,7 @@ export interface SendBlastResult {
 // Session DTOs
 export interface CreateSessionRequest {
   phoneNumber: string;
+  method?: 'qr' | 'pairing';
 }
 
 export interface CreateSessionResponse {
