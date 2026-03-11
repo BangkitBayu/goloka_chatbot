@@ -25,6 +25,7 @@
     "pino": "^9.5.0",
     "pino-pretty": "^13.0.0",
     "qrcode": "^1.5.4",
+    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^13.0.0",
     "zod": "^3.23.8"
