@@ -1,0 +1,288 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────
+   GOLOKA THEME TOKENS
+   Using CSS custom properties so dark/light toggling is instant
+───────────────────────────────────────────────────────────────*/
+:root,
+[data-theme="dark"] {
+  /* Backgrounds */
+  --bg-base:        #050505;
+  --bg-primary:     #0F0F0F;
+  --bg-card:        #1A1A1A;
+  --bg-input:       rgba(26, 26, 26, 0.9);
+  --bg-sidebar:     #0F0F0F;
+  --bg-navbar:      rgba(15, 15, 15, 0.85);
+  --bg-hover:       rgba(255, 255, 255, 0.04);
+  --bg-glow-subtle: rgba(250, 204, 21, 0.05);
+
+  /* Text */
+  --text-primary:   #EAEAEA;
+  --text-muted:     #71717A;
+  --text-subtle:    #3F3F46;
+
+  /* Borders */
+  --border:         rgba(255, 255, 255, 0.05);
+  --border-strong:  rgba(255, 255, 255, 0.10);
+  --border-accent:  rgba(250, 204, 21, 0.20);
+
+  /* Accent (same both themes) */
+  --accent:         #FACC15;
+  --accent-light:   #FEF08A;
+  --accent-dark:    #CA8A04;
+  --accent-bg:      rgba(250, 204, 21, 0.08);
+  --accent-glow:    rgba(250, 204, 21, 0.25);
+
+  /* Status */
+  --success:        #4ade80;
+  --success-bg:     rgba(74, 222, 128, 0.10);
+  --danger:         #f87171;
+  --danger-bg:      rgba(239, 68, 68, 0.10);
+  --info:           #60a5fa;
+  --info-bg:        rgba(96, 165, 250, 0.10);
+  --purple:         #a78bfa;
+  --purple-bg:      rgba(167, 139, 250, 0.10);
+
+  /* Sidebar active */
+  --sidebar-active-bg:      rgba(250, 204, 21, 0.10);
+  --sidebar-active-border:  rgba(250, 204, 21, 0.15);
+  --sidebar-active-text:    #FACC15;
+  --sidebar-link-text:      #71717A;
+}
+
+[data-theme="light"] {
+  /* Backgrounds */
+  --bg-base:        #F1F5F9;
+  --bg-primary:     #F8FAFB;
+  --bg-card:        #FFFFFF;
+  --bg-input:       rgba(255, 255, 255, 0.95);
+  --bg-sidebar:     #FFFFFF;
+  --bg-navbar:      rgba(255, 255, 255, 0.90);
+  --bg-hover:       rgba(0, 0, 0, 0.04);
+  --bg-glow-subtle: rgba(250, 204, 21, 0.08);
+
+  /* Text */
+  --text-primary:   #0F172A;
+  --text-muted:     #64748B;
+  --text-subtle:    #CBD5E1;
+
+  /* Borders */
+  --border:         rgba(0, 0, 0, 0.07);
+  --border-strong:  rgba(0, 0, 0, 0.12);
+  --border-accent:  rgba(250, 204, 21, 0.35);
+
+  /* Accent stays the same */
+  --accent:         #FACC15;
+  --accent-light:   #FEF08A;
+  --accent-dark:    #CA8A04;
+  --accent-bg:      rgba(250, 204, 21, 0.10);
+  --accent-glow:    rgba(250, 204, 21, 0.30);
+
+  /* Status */
+  --success:        #16a34a;
+  --success-bg:     rgba(22, 163, 74, 0.10);
+  --danger:         #dc2626;
+  --danger-bg:      rgba(220, 38, 38, 0.08);
+  --info:           #2563eb;
+  --info-bg:        rgba(37, 99, 235, 0.08);
+  --purple:         #7c3aed;
+  --purple-bg:      rgba(124, 58, 237, 0.08);
+
+  /* Sidebar active */
+  --sidebar-active-bg:      rgba(250, 204, 21, 0.12);
+  --sidebar-active-border:  rgba(202, 138, 4, 0.25);
+  --sidebar-active-text:    #92400E;
+  --sidebar-link-text:      #64748B;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TAILWIND V4 THEME EXTENSION
+───────────────────────────────────────────────────────────────*/
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   BASE
+───────────────────────────────────────────────────────────────*/
+@layer base {
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg-primary); }
+  ::-webkit-scrollbar-thumb { background: var(--accent-dark); border-radius: 2px; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   UTILITY CLASSES
+───────────────────────────────────────────────────────────────*/
+@layer utilities {
+  /* Glows */
+  .glow-secondary {
+    box-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(250, 204, 21, 0.08);
+  }
+  .glow-secondary-sm {
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+
+  /* Glass */
+  .glass {
+    background: var(--bg-navbar);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.25s ease;
+  }
+
+  /* Card */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: background 0.25s ease, border-color 0.25s ease;
+  }
+
+  /* Sidebar Link */
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--sidebar-link-text);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+    border: 1px solid transparent;
+  }
+  .sidebar-link:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+  .sidebar-link.active {
+    background: var(--sidebar-active-bg);
+    color: var(--sidebar-active-text);
+    border-color: var(--sidebar-active-border);
+  }
+
+  /* Buttons */
+  .btn-primary {
+    background-color: var(--accent);
+    color: #0F0F0F;
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary:hover {
+    background-color: var(--accent-light);
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    background: var(--accent-bg);
+    color: var(--accent-dark);
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border-accent);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-secondary:hover {
+    background: rgba(250, 204, 21, 0.14);
+    border-color: rgba(250, 204, 21, 0.4);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-ghost:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+
+  /* Input */
+  .input-field {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s ease, background 0.25s ease;
+    font-family: inherit;
+  }
+  .input-field:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+  }
+  .input-field::placeholder { color: var(--text-muted); }
+
+  /* Badges */
+  .badge-green {
+    background: var(--success-bg);
+    color: var(--success);
+    border: 1px solid rgba(74, 222, 128, 0.20);
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .badge-red {
+    background: var(--danger-bg);
+    color: var(--danger);
+    border: 1px solid rgba(239, 68, 68, 0.20);
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .badge-yellow {
+    background: var(--accent-bg);
+    color: var(--accent-dark);
+    border: 1px solid var(--border-accent);
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+}
