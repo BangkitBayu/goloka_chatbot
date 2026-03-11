@@ -1,0 +1,17 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: goloka_mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: goloka_db
+      MYSQL_ROOT_PASSWORD: password123 # Password buat root
+      MYSQL_USER: salim          # User tambahan (opsional)
+      MYSQL_PASSWORD: password123 
+    ports:
+      - "3306:3306" # KUNCI UTAMA: Mapping port container ke mesin lo
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
