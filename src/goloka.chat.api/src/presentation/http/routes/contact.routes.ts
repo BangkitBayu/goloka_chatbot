@@ -11,13 +11,82 @@ export function createContactRouter(controller: ContactController): Router {
   const router = Router();
   router.use(authenticate);
 
-  // POST /api/v1/contacts
+  /**
+   * @openapi
+   * /api/v1/contacts:
+   *   post:
+   *     tags: [Contacts]
+   *     summary: Create or update a contact
+   *     security: [{ bearerAuth: [] }]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required: [phoneNumber]
+   *             properties:
+   *               name: { type: string }
+   *               phoneNumber: { type: string }
+   *               groupTag: { type: string }
+   *     responses:
+   *       201: { description: Created }
+   */
   router.post('/', validate(UpsertContactSchema), controller.upsert);
-  // GET  /api/v1/contacts?groupTag=vip
+
+  /**
+   * @openapi
+   * /api/v1/contacts:
+   *   get:
+   *     tags: [Contacts]
+   *     summary: List all contacts
+   *     security: [{ bearerAuth: [] }]
+   *     parameters:
+   *       - in: query
+   *         name: groupTag
+   *         schema: { type: string }
+   *         description: Filter by group tag
+   *     responses:
+   *       200: { description: Success }
+   */
   router.get('/', controller.list);
-  // POST /api/v1/contacts/import  (CSV upload)
+
+  /**
+   * @openapi
+   * /api/v1/contacts/import:
+   *   post:
+   *     tags: [Contacts]
+   *     summary: Import contacts from CSV
+   *     security: [{ bearerAuth: [] }]
+   *     requestBody:
+   *       content:
+   *         multipart/form-data:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               csv:
+   *                 type: string
+   *                 format: binary
+   *     responses:
+   *       200: { description: Success }
+   */
   router.post('/import', upload.single('csv'), controller.importCsv);
-  // DELETE /api/v1/contacts/:id
+
+  /**
+   * @openapi
+   * /api/v1/contacts/{id}:
+   *   delete:
+   *     tags: [Contacts]
+   *     summary: Delete a contact
+   *     security: [{ bearerAuth: [] }]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema: { type: string }
+   *     responses:
+   *       200: { description: Success }
+   */
   router.delete('/:id', controller.remove);
 
   return router;

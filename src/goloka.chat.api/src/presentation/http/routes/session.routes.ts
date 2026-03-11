@@ -8,11 +8,54 @@ export function createSessionRouter(controller: SessionController): Router {
   const router = Router();
   router.use(authenticate);
 
-  // POST /api/v1/sessions
+  /**
+   * @openapi
+   * /api/v1/sessions:
+   *   post:
+   *     tags: [Sessions]
+   *     summary: Create/Initialize a WhatsApp session
+   *     security: [{ bearerAuth: [] }]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required: [sessionId]
+   *             properties:
+   *               sessionId: { type: string }
+   *     responses:
+   *       201: { description: Created }
+   */
   router.post('/', validate(CreateSessionSchema), controller.create);
-  // GET  /api/v1/sessions
+
+  /**
+   * @openapi
+   * /api/v1/sessions:
+   *   get:
+   *     tags: [Sessions]
+   *     summary: List all active sessions
+   *     security: [{ bearerAuth: [] }]
+   *     responses:
+   *       200: { description: Success }
+   */
   router.get('/', controller.list);
-  // DELETE /api/v1/sessions/:id
+
+  /**
+   * @openapi
+   * /api/v1/sessions/{id}:
+   *   delete:
+   *     tags: [Sessions]
+   *     summary: Disconnect and delete a session
+   *     security: [{ bearerAuth: [] }]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema: { type: string }
+   *     responses:
+   *       200: { description: Success }
+   */
   router.delete('/:id', controller.disconnect);
 
   return router;
