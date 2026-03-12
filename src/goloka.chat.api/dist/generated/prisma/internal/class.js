@@ -9,13 +9,22 @@
  *
  * Please import the `PrismaClient` class from the `client.ts` file instead.
  */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import * as runtime from "@prisma/client/runtime/client";
 const config = {
     "previewFeatures": [],
     "clientVersion": "7.4.2",
     "engineVersion": "94a226be1cf2967af2541cca5529f0f7ba866919",
     "activeProvider": "mysql",
-    "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n}\n",
+    "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n}\n\n/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.\n/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments\nmodel user {\n  id       Int     @id @default(autoincrement())\n  fullname String\n  email    String  @unique\n  password String\n  company  String?\n}\n",
     "runtimeDataModel": {
         "models": {},
         "enums": {},
@@ -26,22 +35,24 @@ const config = {
         "graph": ""
     }
 };
-config.runtimeDataModel = JSON.parse("{\"models\":{},\"enums\":{},\"types\":{}}");
+config.runtimeDataModel = JSON.parse("{\"models\":{\"user\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fullname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"company\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}");
 config.parameterizationSchema = {
-    strings: JSON.parse("[]"),
-    graph: "AAAA"
+    strings: JSON.parse("[\"where\",\"user.findUnique\",\"user.findUniqueOrThrow\",\"orderBy\",\"cursor\",\"user.findFirst\",\"user.findFirstOrThrow\",\"user.findMany\",\"data\",\"user.createOne\",\"user.createMany\",\"user.updateOne\",\"user.updateMany\",\"create\",\"update\",\"user.upsertOne\",\"user.deleteOne\",\"user.deleteMany\",\"having\",\"_count\",\"_avg\",\"_sum\",\"_min\",\"_max\",\"user.groupBy\",\"user.aggregate\",\"AND\",\"OR\",\"NOT\",\"id\",\"fullname\",\"email\",\"password\",\"company\",\"equals\",\"in\",\"notIn\",\"lt\",\"lte\",\"gt\",\"gte\",\"contains\",\"startsWith\",\"endsWith\",\"search\",\"not\",\"_relevance\",\"set\",\"increment\",\"decrement\",\"multiply\",\"divide\"]"),
+    graph: "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"
 };
-async function decodeBase64AsWasm(wasmBase64) {
-    const { Buffer } = await import('node:buffer');
-    const wasmArray = Buffer.from(wasmBase64, 'base64');
-    return new WebAssembly.Module(wasmArray);
+function decodeBase64AsWasm(wasmBase64) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { Buffer } = yield import('node:buffer');
+        const wasmArray = Buffer.from(wasmBase64, 'base64');
+        return new WebAssembly.Module(wasmArray);
+    });
 }
 config.compilerWasm = {
-    getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.mysql.mjs"),
-    getQueryCompilerWasmModule: async () => {
-        const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.mysql.wasm-base64.mjs");
-        return await decodeBase64AsWasm(wasm);
-    },
+    getRuntime: () => __awaiter(void 0, void 0, void 0, function* () { return yield import("@prisma/client/runtime/query_compiler_fast_bg.mysql.mjs"); }),
+    getQueryCompilerWasmModule: () => __awaiter(void 0, void 0, void 0, function* () {
+        const { wasm } = yield import("@prisma/client/runtime/query_compiler_fast_bg.mysql.wasm-base64.mjs");
+        return yield decodeBase64AsWasm(wasm);
+    }),
     importName: "./query_compiler_fast_bg.js"
 };
 export function getPrismaClientClass() {

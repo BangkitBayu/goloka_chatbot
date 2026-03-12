@@ -38,7 +38,9 @@ export const JsonNull = runtime.JsonNull;
  * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
  */
 export const AnyNull = runtime.AnyNull;
-export const ModelName = {};
+export const ModelName = {
+    user: 'user'
+};
 /*
  * Enums
  */
@@ -48,4 +50,25 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
     RepeatableRead: 'RepeatableRead',
     Serializable: 'Serializable'
 });
+export const UserScalarFieldEnum = {
+    id: 'id',
+    fullname: 'fullname',
+    email: 'email',
+    password: 'password',
+    company: 'company'
+};
+export const SortOrder = {
+    asc: 'asc',
+    desc: 'desc'
+};
+export const NullsOrder = {
+    first: 'first',
+    last: 'last'
+};
+export const userOrderByRelevanceFieldEnum = {
+    fullname: 'fullname',
+    email: 'email',
+    password: 'password',
+    company: 'company'
+};
 //# sourceMappingURL=prismaNamespaceBrowser.js.map

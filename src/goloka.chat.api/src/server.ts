@@ -1,0 +1,41 @@
+import dotenv from "dotenv"
+dotenv.config()
+import express, { urlencoded, type Request, type Response } from "express";
+import cors from "cors";
+import { pinoHttp } from "pino-http";
+import logger from "./utils/logger.js";
+
+import authRouter from "./routes/authRouter.js";
+
+const app = express();
+const port = process.env.PORT;
+
+app.use(
+  cors({
+    origin: `${process.env.APP_URL}:${port}`,
+    methods: "GET,POST,PUT,PATCH,DELETE",
+  }),
+);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(pinoHttp({ logger }));
+
+app.use("/api/v1/auth", authRouter);
+
+app.use("/", (req: Request, res: Response) => {
+  res
+    .json({
+      status: "error",
+      message: "Resource not found",
+    })
+    .status(404);
+});
+
+app
+  .listen(port, () => {
+    console.log(`Server running on: ${process.env.APP_URL}:${port}`);
+  })
+  .on("error", (error) => {
+    throw new Error(error.message);
+  });

@@ -25,7 +25,9 @@ export declare const JsonNull: import("@prisma/client-runtime-utils").JsonNullCl
  * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
  */
 export declare const AnyNull: import("@prisma/client-runtime-utils").AnyNullClass;
-export declare const ModelName: {};
+export declare const ModelName: {
+    readonly user: "user";
+};
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
     readonly ReadUncommitted: "ReadUncommitted";
@@ -34,4 +36,29 @@ export declare const TransactionIsolationLevel: {
     readonly Serializable: "Serializable";
 };
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
+export declare const UserScalarFieldEnum: {
+    readonly id: "id";
+    readonly fullname: "fullname";
+    readonly email: "email";
+    readonly password: "password";
+    readonly company: "company";
+};
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
+export declare const SortOrder: {
+    readonly asc: "asc";
+    readonly desc: "desc";
+};
+export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
+export declare const NullsOrder: {
+    readonly first: "first";
+    readonly last: "last";
+};
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder];
+export declare const userOrderByRelevanceFieldEnum: {
+    readonly fullname: "fullname";
+    readonly email: "email";
+    readonly password: "password";
+    readonly company: "company";
+};
+export type userOrderByRelevanceFieldEnum = (typeof userOrderByRelevanceFieldEnum)[keyof typeof userOrderByRelevanceFieldEnum];
 //# sourceMappingURL=prismaNamespaceBrowser.d.ts.map
