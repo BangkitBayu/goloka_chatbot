@@ -354,6 +354,8 @@ export declare const UserScalarFieldEnum: {
     readonly email: "email";
     readonly password: "password";
     readonly company: "company";
+    readonly avatar: "avatar";
+    readonly phoneNumber: "phoneNumber";
 };
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
 export declare const SortOrder: {
@@ -371,6 +373,8 @@ export declare const userOrderByRelevanceFieldEnum: {
     readonly email: "email";
     readonly password: "password";
     readonly company: "company";
+    readonly avatar: "avatar";
+    readonly phoneNumber: "phoneNumber";
 };
 export type userOrderByRelevanceFieldEnum = (typeof userOrderByRelevanceFieldEnum)[keyof typeof userOrderByRelevanceFieldEnum];
 /**

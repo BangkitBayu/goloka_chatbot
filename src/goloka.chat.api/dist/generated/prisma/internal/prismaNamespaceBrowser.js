@@ -55,7 +55,9 @@ export const UserScalarFieldEnum = {
     fullname: 'fullname',
     email: 'email',
     password: 'password',
-    company: 'company'
+    company: 'company',
+    avatar: 'avatar',
+    phoneNumber: 'phoneNumber'
 };
 export const SortOrder = {
     asc: 'asc',
@@ -69,6 +71,8 @@ export const userOrderByRelevanceFieldEnum = {
     fullname: 'fullname',
     email: 'email',
     password: 'password',
-    company: 'company'
+    company: 'company',
+    avatar: 'avatar',
+    phoneNumber: 'phoneNumber'
 };
 //# sourceMappingURL=prismaNamespaceBrowser.js.map
