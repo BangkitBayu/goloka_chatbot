@@ -1,5 +1,5 @@
-import dotenv from "dotenv"
-dotenv.config()
+import dotenv from "dotenv";
+dotenv.config();
 import express, { urlencoded, type Request, type Response } from "express";
 import cors from "cors";
 import { pinoHttp } from "pino-http";
@@ -23,13 +23,14 @@ app.use(pinoHttp({ logger }));
 
 app.use("/api/v1/auth", authRouter);
 
+// Oauth route
+app.use("/auth/google", authRouter);
+
 app.use("/", (req: Request, res: Response) => {
-  res
-    .json({
-      status: "error",
-      message: "Resource not found",
-    })
-    .status(404);
+  res.status(404).json({
+    status: "error",
+    message: "Resource not found",
+  });
 });
 
 app

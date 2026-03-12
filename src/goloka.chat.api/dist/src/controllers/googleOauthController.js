@@ -10,26 +10,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import {} from "express";
 import { NewUserSchema } from "../schemas/user.schema.js";
 import { createNewUser } from "../services/userServices.js";
-const handleSignup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const payload = NewUserSchema.safeParse(req.body);
-    if (!payload.success)
-        return res
-            .status(422)
-            .json({ status: "error", errors: payload.error.flatten() });
-    const user = yield createNewUser(payload.data);
-    if (user == 1) {
-        return res.status(409).json({
-            status: "failed",
-            message: "Email already exist",
-        });
-    }
-    return res
-        .status(201)
-        .json({
-        status: "success",
-        message: "User created",
-        data: user,
-    });
+import { google } from "googleapis";
+const oauth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, "http://localhost:5000/auth/google/callback");
+const scopes = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+];
+const authorizationUrl = oauth2Client.generateAuthUrl({
+    access_type: "offline",
+    scope: scopes,
+    include_granted_scopes: true,
 });
-export { handleSignup };
-//# sourceMappingURL=authController.js.map
+export const handleOauthSignup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.redirect(authorizationUrl);
+});
+//# sourceMappingURL=googleOauthController.js.map

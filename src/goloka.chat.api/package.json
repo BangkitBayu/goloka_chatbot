@@ -7,13 +7,14 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "npx tsc && node dist/server.js "
+    "start": "npx tsc && node dist/src/server.js "
   },
   "dependencies": {
     "@prisma/adapter-mariadb": "^7.4.2",
     "@prisma/client": "^7.4.2",
     "cors": "^2.8.6",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "googleapis": "^171.4.0"
   },
   "devDependencies": {
     "@types/dotenv": "^6.1.1",

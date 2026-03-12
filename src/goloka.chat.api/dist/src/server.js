@@ -15,14 +15,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(pinoHttp({ logger }));
 app.use("/api/v1/auth", authRouter);
-app.use("/", (req, res) => {
-    res
-        .json({
-        status: "error",
-        message: "Resource not found",
-    })
-        .status(404);
-});
+// Oauth route
+app.use("/auth/google", authRouter);
+// app.use("/", (req: Request, res: Response) => {
+//   res.status(404).json({
+//     status: "error",
+//     message: "Resource not found",
+//   });
+// });
 app
     .listen(port, () => {
     console.log(`Server running on: ${process.env.APP_URL}:${port}`);
