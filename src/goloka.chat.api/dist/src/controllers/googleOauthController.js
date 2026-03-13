@@ -11,6 +11,7 @@ import {} from "express";
 import { NewUserSchema } from "../schemas/user.schema.js";
 import { createNewUser, findUserByEmail } from "../services/userServices.js";
 import { google } from "googleapis";
+import { generateToken } from "../utils/generateToken.js";
 const oauth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, "http://localhost:5000/auth/google/callback");
 const scopes = [
     "https://www.googleapis.com/auth/userinfo.email",
@@ -21,7 +22,7 @@ const authorizationUrl = oauth2Client.generateAuthUrl({
     scope: scopes,
     include_granted_scopes: true,
 });
-export const handleOauthSignup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+export const handleOauth = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.redirect(authorizationUrl);
 });
 export const handleOauthCallback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -49,8 +50,32 @@ export const handleOauthCallback = (req, res) => __awaiter(void 0, void 0, void 
         return res.status(201).json({
             status: "success",
             message: "User created",
-            data: newUser,
+            data: {
+                id: newUser.id, //memaksa ts untuk type casting id ke number
+                fullname: data.name,
+                email: data.email,
+            },
         });
     }
+    const payload = {
+        id: existsUser.id,
+        fullname: existsUser.fullname,
+        email: existsUser.email,
+    };
+    const secret = process.env.JWT_SECRET;
+    const token = generateToken(payload, secret, "2d");
+    return res.status(200).json({
+        status: "success",
+        message: "Login success",
+        data: {
+            id: existsUser.id,
+            fullname: existsUser.fullname,
+            email: existsUser.email,
+        },
+        token,
+    });
+    // return res
+    //   .status(200)
+    //   .redirect(`http://localhost:5000/auth-success?token=${token}`); ini skenario jika frontend redirect ke halaman sukses jika user berhasil login 
 });
 //# sourceMappingURL=googleOauthController.js.map

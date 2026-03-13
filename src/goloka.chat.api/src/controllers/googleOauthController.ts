@@ -2,6 +2,8 @@ import { type Request, type Response } from "express";
 import { NewUserSchema } from "../schemas/user.schema.js";
 import { createNewUser, findUserByEmail } from "../services/userServices.js";
 import { google } from "googleapis";
+import { generateToken } from "../utils/generateToken.js";
+import type { User } from "../types/user.type.js";
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
@@ -57,7 +59,36 @@ export const handleOauthCallback = async (req: Request, res: Response) => {
     return res.status(201).json({
       status: "success",
       message: "User created",
-      data: newUser,
+      data: {
+        id: (newUser as { id: number }).id, //memaksa ts untuk type casting id ke number
+        fullname: data.name,
+        email: data.email,
+      },
     });
   }
+
+  const payload = {
+    id: existsUser.id,
+    fullname: existsUser.fullname,
+    email: existsUser.email,
+  };
+
+  const secret = process.env.JWT_SECRET as string;
+
+  const token = generateToken(payload, secret, "2d");
+
+  return res.status(200).json({
+    status: "success",
+    message: "Login success",
+    data: {
+      id: existsUser.id,
+      fullname: existsUser.fullname,
+      email: existsUser.email,
+    },
+    token,
+  });
+
+  // return res
+  //   .status(200)
+  //   .redirect(`http://localhost:5000/auth-success?token=${token}`); ini skenario jika frontend redirect ke halaman sukses jika user berhasil login 
 };

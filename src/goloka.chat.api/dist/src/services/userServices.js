@@ -35,6 +35,5 @@ const findUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* (
         },
     });
 });
-const createNewUserByOauth = (data) => __awaiter(void 0, void 0, void 0, function* () { });
 export { createNewUser, findUserByEmail };
 //# sourceMappingURL=userServices.js.map
