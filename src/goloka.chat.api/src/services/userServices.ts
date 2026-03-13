@@ -3,17 +3,17 @@ import { hashPassword } from "../utils/password.js";
 import prisma from "../utils/prisma.js";
 
 const createNewUser = async (data: User) => {
-  const { fullname, company, email, password } = data;
+  const { fullname, company, email, password, avatar } = data;
 
   const existEmail = await prisma.user.count({
-    where: { email: email },
+    where: { email: email as string },
   });
 
-  if(existEmail > 0) {
-    return existEmail
+  if (existEmail > 0) {
+    return existEmail;
   }
 
-  const hashedPassword = await hashPassword(password);
+  const hashedPassword = password ? await hashPassword(password) : "";
 
   return await prisma.user.create({
     data: {
@@ -21,8 +21,17 @@ const createNewUser = async (data: User) => {
       company: company as string,
       email: email as string,
       password: hashedPassword,
+      avatar: avatar as string,
     },
   });
 };
 
-export { createNewUser };
+const findUserByEmail = async (email: string) => {
+  return await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+};
+
+export { createNewUser, findUserByEmail };

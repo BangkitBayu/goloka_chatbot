@@ -10,22 +10,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { hashPassword } from "../utils/password.js";
 import prisma from "../utils/prisma.js";
 const createNewUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const { fullname, company, email, password } = data;
+    const { fullname, company, email, password, avatar } = data;
     const existEmail = yield prisma.user.count({
         where: { email: email },
     });
     if (existEmail > 0) {
         return existEmail;
     }
-    const hashedPassword = yield hashPassword(password);
+    const hashedPassword = password ? yield hashPassword(password) : "";
     return yield prisma.user.create({
         data: {
             fullname: fullname,
             company: company,
             email: email,
             password: hashedPassword,
+            avatar: avatar,
         },
     });
 });
-export { createNewUser };
+const findUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield prisma.user.findUnique({
+        where: {
+            email: email,
+        },
+    });
+});
+const createNewUserByOauth = (data) => __awaiter(void 0, void 0, void 0, function* () { });
+export { createNewUser, findUserByEmail };
 //# sourceMappingURL=userServices.js.map

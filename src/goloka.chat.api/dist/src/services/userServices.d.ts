@@ -8,5 +8,14 @@ declare const createNewUser: (data: User) => Promise<number | {
     phoneNumber: string | null;
     id: number;
 }>;
-export { createNewUser };
+declare const findUserByEmail: (email: string) => Promise<{
+    email: string;
+    fullname: string;
+    company: string | null;
+    password: string;
+    avatar: string | null;
+    phoneNumber: string | null;
+    id: number;
+} | null>;
+export { createNewUser, findUserByEmail };
 //# sourceMappingURL=userServices.d.ts.map

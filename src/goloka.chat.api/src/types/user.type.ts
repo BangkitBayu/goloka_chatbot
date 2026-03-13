@@ -1,8 +1,8 @@
 export interface User {
-  fullname: string;
+  fullname?: string;
   company?: string | undefined;
-  email: string;
-  password: string;
+  email?: string;
+  password?: string;
   avatar?: string;
   phoneNumber?: string;
 }

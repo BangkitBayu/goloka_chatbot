@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express";
 import { NewUserSchema } from "../schemas/user.schema.js";
-import { createNewUser } from "../services/userServices.js";
+import { createNewUser, findUserByEmail } from "../services/userServices.js";
 import { google } from "googleapis";
 
 const oauth2Client = new google.auth.OAuth2(
@@ -20,6 +20,44 @@ const authorizationUrl = oauth2Client.generateAuthUrl({
   include_granted_scopes: true,
 });
 
-export const handleOauthSignup = async (req: Request, res: Response) => {
+export const handleOauth = async (req: Request, res: Response) => {
   res.redirect(authorizationUrl);
+};
+
+export const handleOauthCallback = async (req: Request, res: Response) => {
+  const { code } = req.query;
+
+  const { tokens } = await oauth2Client.getToken(code as string);
+
+  oauth2Client.setCredentials(tokens);
+
+  const oauth2 = google.oauth2({
+    auth: oauth2Client,
+    version: "v2",
+  });
+
+  const { data } = await oauth2.userinfo.get();
+
+  if (!data)
+    return res.status(404).json({
+      status: "failed",
+      message: "Failed to get data",
+      data: data,
+    });
+
+  const existsUser = await findUserByEmail(data.email as string);
+
+  if (!existsUser) {
+    const newUser = await createNewUser({
+      fullname: data.name as string,
+      email: data.email as string,
+      avatar: data.picture as string,
+    });
+
+    return res.status(201).json({
+      status: "success",
+      message: "User created",
+      data: newUser,
+    });
+  }
 };

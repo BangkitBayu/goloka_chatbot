@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import {} from "express";
 import { NewUserSchema } from "../schemas/user.schema.js";
-import { createNewUser } from "../services/userServices.js";
+import { createNewUser, findUserByEmail } from "../services/userServices.js";
 import { google } from "googleapis";
 const oauth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, "http://localhost:5000/auth/google/callback");
 const scopes = [
@@ -23,5 +23,34 @@ const authorizationUrl = oauth2Client.generateAuthUrl({
 });
 export const handleOauthSignup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.redirect(authorizationUrl);
+});
+export const handleOauthCallback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { code } = req.query;
+    const { tokens } = yield oauth2Client.getToken(code);
+    oauth2Client.setCredentials(tokens);
+    const oauth2 = google.oauth2({
+        auth: oauth2Client,
+        version: "v2",
+    });
+    const { data } = yield oauth2.userinfo.get();
+    if (!data)
+        return res.status(404).json({
+            status: "failed",
+            message: "Failed to get data",
+            data: data,
+        });
+    const existsUser = yield findUserByEmail(data.email);
+    if (!existsUser) {
+        const newUser = yield createNewUser({
+            fullname: data.name,
+            email: data.email,
+            avatar: data.picture,
+        });
+        return res.status(201).json({
+            status: "success",
+            message: "User created",
+            data: newUser,
+        });
+    }
 });
 //# sourceMappingURL=googleOauthController.js.map
