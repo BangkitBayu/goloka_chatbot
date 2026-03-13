@@ -2,7 +2,7 @@ import { type Request, type Response } from "express";
 import { NewUserSchema } from "../schemas/user.schema.js";
 import { createNewUser } from "../services/userServices.js";
 
-const handleSignup = async (req: Request, res: Response) => {
+const handleRegister = async (req: Request, res: Response) => {
   const payload = NewUserSchema.safeParse(req.body);
   if (!payload.success)
     return res
@@ -27,4 +27,4 @@ const handleSignup = async (req: Request, res: Response) => {
     })
 };
 
-export { handleSignup };
+export { handleRegister };
