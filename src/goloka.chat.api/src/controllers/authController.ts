@@ -18,13 +18,15 @@ const handleRegister = async (req: Request, res: Response) => {
     });
   }
 
-  return res
-    .status(201)
-    .json({
-      status: "success",
-      message: "User created",
-      data: user,
-    })
+  return res.status(201).json({
+    status: "success",
+    message: "User created",
+    data: user,
+  });
 };
 
-export { handleRegister };
+const handleLogin = async (req: Request, res: Response) => {
+  res.status(200).json("success");
+};
+
+export { handleRegister, handleLogin };
