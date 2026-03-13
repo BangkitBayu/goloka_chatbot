@@ -51,7 +51,8 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  user: 'user'
+  User: 'User',
+  Refresh_Token: 'Refresh_Token'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -83,6 +84,17 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const Refresh_TokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  createdAt: 'createdAt',
+  expiredAt: 'expiredAt',
+  userId: 'userId'
+} as const
+
+export type Refresh_TokenScalarFieldEnum = (typeof Refresh_TokenScalarFieldEnum)[keyof typeof Refresh_TokenScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -99,7 +111,7 @@ export const NullsOrder = {
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
-export const userOrderByRelevanceFieldEnum = {
+export const UserOrderByRelevanceFieldEnum = {
   fullname: 'fullname',
   email: 'email',
   password: 'password',
@@ -108,5 +120,12 @@ export const userOrderByRelevanceFieldEnum = {
   phoneNumber: 'phoneNumber'
 } as const
 
-export type userOrderByRelevanceFieldEnum = (typeof userOrderByRelevanceFieldEnum)[keyof typeof userOrderByRelevanceFieldEnum]
+export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
+
+
+export const Refresh_TokenOrderByRelevanceFieldEnum = {
+  token: 'token'
+} as const
+
+export type Refresh_TokenOrderByRelevanceFieldEnum = (typeof Refresh_TokenOrderByRelevanceFieldEnum)[keyof typeof Refresh_TokenOrderByRelevanceFieldEnum]
 
