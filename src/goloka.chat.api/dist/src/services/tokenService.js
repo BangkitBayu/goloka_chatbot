@@ -11,7 +11,6 @@ import crypto from "crypto";
 import prisma from "../utils/prisma.js";
 import { setNextDate } from "../utils/setNextDate.js";
 export const storeNewRefreshToken = (refreshToken, countDate, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const nextDate = setNextDate(countDate);
     const hashedRefreshToken = crypto
         .createHash("sha256")
         .update(refreshToken)
@@ -21,6 +20,13 @@ export const storeNewRefreshToken = (refreshToken, countDate, userId) => __await
             token: hashedRefreshToken,
             createdAt: new Date(),
             expiredAt: new Date(setNextDate(countDate)),
+            userId: userId,
+        },
+    });
+});
+export const checkStoredToken = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield prisma.refresh_Token.count({
+        where: {
             userId: userId,
         },
     });

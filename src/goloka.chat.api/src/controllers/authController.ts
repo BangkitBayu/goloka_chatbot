@@ -5,7 +5,10 @@ import type { User } from "../types/user.type.js";
 import { verifyPassword } from "../utils/password.js";
 import { generateAccessToken } from "../utils/generateAccessToken.js";
 import { generateRefreshToken } from "../utils/generateRefreshToken.js";
-import { storeNewRefreshToken } from "../services/tokenService.js";
+import {
+  checkStoredToken,
+  storeNewRefreshToken,
+} from "../services/tokenService.js";
 import cookieParser from "cookie-parser";
 
 const handleRegister = async (req: Request, res: Response) => {
@@ -64,6 +67,33 @@ const handleLogin = async (req: Request, res: Response) => {
       process.env.JWT_SECRET as string,
       `${15 * 60}`,
     );
+
+    const existsToken = await checkStoredToken(user.id);
+
+    if (existsToken == 1) {
+      res.cookie("refreshToken", newRefreshToken, {
+        maxAge: 86400, //1 hari,
+        httpOnly: true,
+        sameSite: true,
+        secure: true,
+      });
+
+      return res.status(200).json({
+        status: "success",
+        message: "Login success",
+        data: {
+          access_token: newAccessToken,
+          token_type: "Bearer",
+          expires_in: 15 * 60,
+          user: {
+            id: user.id,
+            fullname: user.fullname,
+            email: user.email,
+          },
+        },
+      });
+    }
+
     try {
       await storeNewRefreshToken(newRefreshToken, 1, user.id);
 
@@ -97,6 +127,7 @@ const handleLogin = async (req: Request, res: Response) => {
   }
 
   //Opsi 2: ketika user tetap login 30 hari
+
   const newAccessToken = generateAccessToken(
     {
       id: user.id,
@@ -106,8 +137,34 @@ const handleLogin = async (req: Request, res: Response) => {
     process.env.JWT_SECRET as string,
     `${15 * 60}`,
   );
+  const existsToken = await checkStoredToken(user.id);
+
+  if (existsToken == 1) {
+    res.cookie("refreshToken", newRefreshToken, {
+      maxAge: 2592000, //30 hari,
+      httpOnly: true,
+      sameSite: true,
+      secure: true,
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "Login success",
+      data: {
+        access_token: newAccessToken,
+        token_type: "Bearer",
+        expires_in: 15 * 60,
+        user: {
+          id: user.id,
+          fullname: user.fullname,
+          email: user.email,
+        },
+      },
+    });
+  }
+
   try {
-    await storeNewRefreshToken(newRefreshToken, 1, user.id);
+    await storeNewRefreshToken(newRefreshToken, 30, user.id);
 
     res.cookie("refreshToken", newRefreshToken, {
       maxAge: 2592000, //30 hari,

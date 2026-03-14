@@ -7,7 +7,6 @@ export const storeNewRefreshToken = async (
   countDate: number,
   userId: number,
 ) => {
-  const nextDate = setNextDate(countDate);
   const hashedRefreshToken = crypto
     .createHash("sha256")
     .update(refreshToken)
@@ -18,6 +17,14 @@ export const storeNewRefreshToken = async (
       token: hashedRefreshToken,
       createdAt: new Date(),
       expiredAt: new Date(setNextDate(countDate)),
+      userId: userId,
+    },
+  });
+};
+
+export const checkStoredToken = async (userId: number) => {
+  return await prisma.refresh_Token.count({
+    where: {
       userId: userId,
     },
   });
