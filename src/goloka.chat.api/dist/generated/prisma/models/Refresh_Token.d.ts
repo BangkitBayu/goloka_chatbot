@@ -226,7 +226,7 @@ export type Refresh_TokenUncheckedCreateInput = {
     id?: number;
     token: string;
     createdAt: Date | string;
-    expiredAt: Date | string;
+    expiredAt: Date | string | number;
     userId: number;
 };
 export type Refresh_TokenUpdateInput = {

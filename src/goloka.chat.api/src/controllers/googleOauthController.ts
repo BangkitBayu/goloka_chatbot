@@ -1,9 +1,7 @@
 import { type Request, type Response } from "express";
-import { NewUserSchema } from "../schemas/user.schema.js";
 import { createNewUser, findUserByEmail } from "../services/userServices.js";
 import { google } from "googleapis";
-import { generateToken } from "../utils/generateToken.js";
-import type { User } from "../types/user.type.js";
+import { generateAccessToken } from "../utils/generateAccessToken.js";
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
@@ -75,7 +73,7 @@ export const handleOauthCallback = async (req: Request, res: Response) => {
 
   const secret = process.env.JWT_SECRET as string;
 
-  const token = generateToken(payload, secret, "2d");
+  const token = generateAccessToken(payload, secret, "2d");
 
   return res.status(200).json({
     status: "success",
@@ -90,5 +88,5 @@ export const handleOauthCallback = async (req: Request, res: Response) => {
 
   // return res
   //   .status(200)
-  //   .redirect(`http://localhost:5000/auth-success?token=${token}`); ini skenario jika frontend redirect ke halaman sukses jika user berhasil login 
+  //   .redirect(`http://localhost:5000/auth-success?token=${token}`); ini skenario jika frontend redirect ke halaman sukses jika user berhasil login
 };

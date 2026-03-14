@@ -8,10 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import {} from "express";
-import { NewUserSchema } from "../schemas/user.schema.js";
 import { createNewUser, findUserByEmail } from "../services/userServices.js";
 import { google } from "googleapis";
-import { generateToken } from "../utils/generateToken.js";
+import { generateAccessToken } from "../utils/generateAccessToken.js";
 const oauth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, "http://localhost:5000/auth/google/callback");
 const scopes = [
     "https://www.googleapis.com/auth/userinfo.email",
@@ -63,7 +62,7 @@ export const handleOauthCallback = (req, res) => __awaiter(void 0, void 0, void 
         email: existsUser.email,
     };
     const secret = process.env.JWT_SECRET;
-    const token = generateToken(payload, secret, "2d");
+    const token = generateAccessToken(payload, secret, "2d");
     return res.status(200).json({
         status: "success",
         message: "Login success",
@@ -76,6 +75,6 @@ export const handleOauthCallback = (req, res) => __awaiter(void 0, void 0, void 
     });
     // return res
     //   .status(200)
-    //   .redirect(`http://localhost:5000/auth-success?token=${token}`); ini skenario jika frontend redirect ke halaman sukses jika user berhasil login 
+    //   .redirect(`http://localhost:5000/auth-success?token=${token}`); ini skenario jika frontend redirect ke halaman sukses jika user berhasil login
 });
 //# sourceMappingURL=googleOauthController.js.map

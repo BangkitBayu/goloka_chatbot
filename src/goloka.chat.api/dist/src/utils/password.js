@@ -11,4 +11,7 @@ import * as argon2 from "argon2";
 export const hashPassword = (password) => __awaiter(void 0, void 0, void 0, function* () {
     return yield argon2.hash(password);
 });
+export const verifyPassword = (hashedPassword, password) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield argon2.verify(hashedPassword, password);
+});
 //# sourceMappingURL=password.js.map

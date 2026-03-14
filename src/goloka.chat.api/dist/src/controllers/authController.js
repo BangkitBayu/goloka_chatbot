@@ -8,11 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import {} from "express";
-import { NewUserSchema, UserSchema } from "../schemas/user.schema.js";
-import { createNewUser } from "../services/userServices.js";
-import { LoginSchema } from "../schemas/auth.schema.js";
+import { createNewUser, findUserByEmail } from "../services/userServices.js";
+import { LoginSchema, RegisterSchema } from "../schemas/auth.schema.js";
+import { verifyPassword } from "../utils/password.js";
+import { generateAccessToken } from "../utils/generateAccessToken.js";
+import { generateRefreshToken } from "../utils/generateRefreshToken.js";
+import { storeNewRefreshToken } from "../services/tokenService.js";
+import cookieParser from "cookie-parser";
 const handleRegister = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const payload = NewUserSchema.safeParse(req.body);
+    const payload = RegisterSchema.safeParse(req.body);
     if (!payload.success)
         return res
             .status(422)
@@ -36,7 +40,87 @@ const handleLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return res
             .status(422)
             .json({ status: "error", errors: payload.error.flatten() });
-    res.json(req.body);
+    const user = yield findUserByEmail(payload.data.email);
+    if (!user)
+        return res.status(404).json({ status: "error", message: "User not found" });
+    if (user.password !== "" &&
+        (yield verifyPassword(user.password, req.body.password)) !== true)
+        return res
+            .status(422)
+            .json({ status: "error", message: "Incorrect password" });
+    const newRefreshToken = generateRefreshToken(32, "hex");
+    //Opsi 1:  user tidak pilih login 30 hari
+    if (!payload.data.keepLogged) {
+        const newAccessToken = generateAccessToken({
+            id: user.id,
+            fullname: user.fullname,
+            email: user.email,
+        }, process.env.JWT_SECRET, `${15 * 60}`);
+        try {
+            yield storeNewRefreshToken(newRefreshToken, 1, user.id);
+            res.cookie("refreshToken", newRefreshToken, {
+                maxAge: 86400, //1 hari,
+                httpOnly: true,
+                sameSite: true,
+                secure: true,
+            });
+            return res.status(200).json({
+                status: "success",
+                message: "Login success",
+                data: {
+                    access_token: newAccessToken,
+                    token_type: "Bearer",
+                    expires_in: 15 * 60,
+                    user: {
+                        id: user.id,
+                        fullname: user.fullname,
+                        email: user.email,
+                    },
+                },
+            });
+        }
+        catch (error) {
+            return res.status(500).json({
+                status: "error",
+                message: "Invalid request",
+            });
+        }
+    }
+    //Opsi 2: ketika user tetap login 30 hari
+    const newAccessToken = generateAccessToken({
+        id: user.id,
+        fullname: user.fullname,
+        email: user.email,
+    }, process.env.JWT_SECRET, `${15 * 60}`);
+    try {
+        yield storeNewRefreshToken(newRefreshToken, 1, user.id);
+        res.cookie("refreshToken", newRefreshToken, {
+            maxAge: 2592000, //30 hari,
+            httpOnly: true,
+            sameSite: true,
+            secure: true,
+        });
+        return res.status(200).json({
+            status: "success",
+            message: "Login success",
+            data: {
+                access_token: newAccessToken,
+                token_type: "Bearer",
+                expires_in: 15 * 60,
+                user: {
+                    id: user.id,
+                    fullname: user.fullname,
+                    email: user.email,
+                },
+            },
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            status: "error",
+            message: "Invalid request",
+        });
+    }
 });
 export { handleRegister, handleLogin };
 //# sourceMappingURL=authController.js.map
