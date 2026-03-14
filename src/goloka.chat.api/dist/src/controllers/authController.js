@@ -8,8 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import {} from "express";
-import { NewUserSchema } from "../schemas/user.schema.js";
+import { NewUserSchema, UserSchema } from "../schemas/user.schema.js";
 import { createNewUser } from "../services/userServices.js";
+import { LoginSchema } from "../schemas/auth.schema.js";
 const handleRegister = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const payload = NewUserSchema.safeParse(req.body);
     if (!payload.success)
@@ -30,7 +31,12 @@ const handleRegister = (req, res) => __awaiter(void 0, void 0, void 0, function*
     });
 });
 const handleLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.status(200).json("success");
+    const payload = LoginSchema.safeParse(req.body);
+    if (!payload.success)
+        return res
+            .status(422)
+            .json({ status: "error", errors: payload.error.flatten() });
+    res.json(req.body);
 });
 export { handleRegister, handleLogin };
 //# sourceMappingURL=authController.js.map

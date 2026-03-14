@@ -68,7 +68,8 @@ export const JsonNull = runtime.JsonNull;
  */
 export const AnyNull = runtime.AnyNull;
 export const ModelName = {
-    user: 'user'
+    User: 'User',
+    Refresh_Token: 'Refresh_Token'
 };
 /**
  * Enums
@@ -88,6 +89,13 @@ export const UserScalarFieldEnum = {
     avatar: 'avatar',
     phoneNumber: 'phoneNumber'
 };
+export const Refresh_TokenScalarFieldEnum = {
+    id: 'id',
+    token: 'token',
+    createdAt: 'createdAt',
+    expiredAt: 'expiredAt',
+    userId: 'userId'
+};
 export const SortOrder = {
     asc: 'asc',
     desc: 'desc'
@@ -96,13 +104,16 @@ export const NullsOrder = {
     first: 'first',
     last: 'last'
 };
-export const userOrderByRelevanceFieldEnum = {
+export const UserOrderByRelevanceFieldEnum = {
     fullname: 'fullname',
     email: 'email',
     password: 'password',
     company: 'company',
     avatar: 'avatar',
     phoneNumber: 'phoneNumber'
+};
+export const Refresh_TokenOrderByRelevanceFieldEnum = {
+    token: 'token'
 };
 export const defineExtension = runtime.Extensions.defineExtension;
 //# sourceMappingURL=prismaNamespace.js.map

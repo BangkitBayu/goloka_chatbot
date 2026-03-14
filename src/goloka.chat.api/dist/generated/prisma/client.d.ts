@@ -22,9 +22,14 @@ export declare const PrismaClient: $Class.PrismaClientConstructor;
 export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts extends Prisma.PrismaClientOptions["omit"] = Prisma.PrismaClientOptions["omit"], ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = $Class.PrismaClient<LogOpts, OmitOpts, ExtArgs>;
 export { Prisma };
 /**
- * Model user
+ * Model User
  * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
  * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
  */
-export type user = Prisma.userModel;
+export type User = Prisma.UserModel;
+/**
+ * Model Refresh_Token
+ *
+ */
+export type Refresh_Token = Prisma.Refresh_TokenModel;
 //# sourceMappingURL=client.d.ts.map

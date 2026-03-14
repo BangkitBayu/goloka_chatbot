@@ -26,7 +26,8 @@ export declare const JsonNull: import("@prisma/client-runtime-utils").JsonNullCl
  */
 export declare const AnyNull: import("@prisma/client-runtime-utils").AnyNullClass;
 export declare const ModelName: {
-    readonly user: "user";
+    readonly User: "User";
+    readonly Refresh_Token: "Refresh_Token";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
@@ -46,6 +47,14 @@ export declare const UserScalarFieldEnum: {
     readonly phoneNumber: "phoneNumber";
 };
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
+export declare const Refresh_TokenScalarFieldEnum: {
+    readonly id: "id";
+    readonly token: "token";
+    readonly createdAt: "createdAt";
+    readonly expiredAt: "expiredAt";
+    readonly userId: "userId";
+};
+export type Refresh_TokenScalarFieldEnum = (typeof Refresh_TokenScalarFieldEnum)[keyof typeof Refresh_TokenScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";
@@ -56,7 +65,7 @@ export declare const NullsOrder: {
     readonly last: "last";
 };
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder];
-export declare const userOrderByRelevanceFieldEnum: {
+export declare const UserOrderByRelevanceFieldEnum: {
     readonly fullname: "fullname";
     readonly email: "email";
     readonly password: "password";
@@ -64,5 +73,9 @@ export declare const userOrderByRelevanceFieldEnum: {
     readonly avatar: "avatar";
     readonly phoneNumber: "phoneNumber";
 };
-export type userOrderByRelevanceFieldEnum = (typeof userOrderByRelevanceFieldEnum)[keyof typeof userOrderByRelevanceFieldEnum];
+export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum];
+export declare const Refresh_TokenOrderByRelevanceFieldEnum: {
+    readonly token: "token";
+};
+export type Refresh_TokenOrderByRelevanceFieldEnum = (typeof Refresh_TokenOrderByRelevanceFieldEnum)[keyof typeof Refresh_TokenOrderByRelevanceFieldEnum];
 //# sourceMappingURL=prismaNamespaceBrowser.d.ts.map

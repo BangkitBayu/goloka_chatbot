@@ -1,9 +1,9 @@
 import { type Request, type Response } from "express";
-import { NewUserSchema } from "../schemas/user.schema.js";
 import { createNewUser } from "../services/userServices.js";
+import { LoginSchema, RegisterSchema } from "../schemas/auth.schema.js";
 
 const handleRegister = async (req: Request, res: Response) => {
-  const payload = NewUserSchema.safeParse(req.body);
+  const payload = RegisterSchema.safeParse(req.body);
   if (!payload.success)
     return res
       .status(422)
@@ -26,7 +26,13 @@ const handleRegister = async (req: Request, res: Response) => {
 };
 
 const handleLogin = async (req: Request, res: Response) => {
-  res.status(200).json("success");
+  const payload = LoginSchema.safeParse(req.body);
+  if (!payload.success)
+    return res
+      .status(422)
+      .json({ status: "error", errors: payload.error.flatten() });
+
+  res.json(req.body);
 };
 
 export { handleRegister, handleLogin };
