@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Smartphone,
@@ -16,6 +16,9 @@ import {
 } from "lucide-react";
 import { dashboardStats } from "@/lib/dummy-data";
 import clsx from "clsx";
+import { useEffect, useState } from "react";
+import AuthService from "@/services/auth.service";
+import Cookies from "js-cookie";
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -31,6 +34,22 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { quotaUsed, quotaTotal, plan, activeNumbers } = dashboardStats;
   const quotaPct = Math.round((quotaUsed / quotaTotal) * 100);
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    activeNumbers,
+  });
+
+  const authSvc = new AuthService();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await authSvc.me();
+      console.log("user", user);
+      setUser(user.data);
+    };
+    fetchUser();
+  }, []);
 
   return (
     <aside
@@ -80,21 +99,46 @@ export default function Sidebar() {
           >
             GOLOKA
           </span>
-          <p style={{ fontSize: 10, color: "var(--text-muted)", marginTop: -2, letterSpacing: "0.06em" }}>
+          <p
+            style={{
+              fontSize: 10,
+              color: "var(--text-muted)",
+              marginTop: -2,
+              letterSpacing: "0.06em",
+            }}
+          >
             WhatsApp Blast
           </p>
         </div>
       </div>
 
       {/* Nav */}
-      <nav style={{ flex: 1, padding: "12px", overflowY: "auto", display: "flex", flexDirection: "column", gap: 2 }}>
+      <nav
+        style={{
+          flex: 1,
+          padding: "12px",
+          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+        }}
+      >
         {navLinks.map(({ href, label, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(href + "/");
           return (
-            <Link key={href} href={href} className={clsx("sidebar-link", isActive && "active")}>
+            <Link
+              key={href}
+              href={href}
+              className={clsx("sidebar-link", isActive && "active")}
+            >
               <Icon size={17} strokeWidth={isActive ? 2.5 : 2} />
               <span>{label}</span>
-              {isActive && <ChevronRight size={13} style={{ marginLeft: "auto", opacity: 0.6 }} />}
+              {isActive && (
+                <ChevronRight
+                  size={13}
+                  style={{ marginLeft: "auto", opacity: 0.6 }}
+                />
+              )}
             </Link>
           );
         })}
@@ -110,8 +154,23 @@ export default function Sidebar() {
             padding: "14px 16px",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-            <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)" }}>Monthly Quota</span>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 8,
+            }}
+          >
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: "var(--text-primary)",
+              }}
+            >
+              Monthly Quota
+            </span>
             <span className="badge-yellow">{plan}</span>
           </div>
           <div
@@ -153,8 +212,12 @@ export default function Sidebar() {
             transition: "background 0.2s",
             textDecoration: "none",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "var(--bg-hover)")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.background = "var(--bg-hover)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.background = "transparent")
+          }
         >
           <div
             style={{
@@ -174,16 +237,49 @@ export default function Sidebar() {
             SA
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              Salim Admin
+            <p
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: "var(--text-primary)",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {user.name}
             </p>
-            <p style={{ fontSize: 11, color: "var(--text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              admin@goloka.id
+            <p
+              style={{
+                fontSize: 11,
+                color: "var(--text-muted)",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {user.email}
             </p>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
-            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--success)" }} />
-            <span style={{ fontSize: 10, color: "var(--text-muted)" }}>{activeNumbers} active</span>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              flexShrink: 0,
+            }}
+          >
+            <div
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "var(--success)",
+              }}
+            />
+            <span style={{ fontSize: 10, color: "var(--text-muted)" }}>
+              {activeNumbers} active
+            </span>
           </div>
         </a>
         {/* Logout */}
@@ -203,8 +299,14 @@ export default function Sidebar() {
             fontWeight: 500,
             transition: "background 0.2s",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "var(--danger-bg)")}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.background = "var(--danger-bg)")
+          }
           onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
+          onClick={() => {
+            Cookies.remove("token");
+            redirect("/login");
+          }}
         >
           <LogOut size={14} />
           Sign out
