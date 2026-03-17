@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model User {
+  id           Int           @id @default(autoincrement())
+  fullname     String
+  email        String        @unique
+  password     String
+  company      String?
+  avatar       String?
+  phoneNumber  String?
+  refreshToken Refresh_Token?
+}
+
+model Refresh_Token {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  createdAt DateTime
+  expiredAt DateTime
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
+}
