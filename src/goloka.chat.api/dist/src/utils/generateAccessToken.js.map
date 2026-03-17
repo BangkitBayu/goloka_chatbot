@@ -1,0 +1,1 @@
+{"version":3,"file":"generateAccessToken.js","sourceRoot":"","sources":["../../../src/utils/generateAccessToken.ts"],"names":[],"mappings":"AAAA,OAAO,GAAG,MAAM,cAAc,CAAC;AAE/B,MAAM,CAAC,MAAM,mBAAmB,GAAG,CAAC,OAAe,EAAE,MAAc,EAAE,SAAiB,EAAE,EAAE;IACxF,OAAO,GAAG,CAAC,IAAI,CAAC,OAAO,EAAE,MAAM,EAAE;QAC/B,SAAS;KACV,CAAC,CAAC;AACL,CAAC,CAAC"}
