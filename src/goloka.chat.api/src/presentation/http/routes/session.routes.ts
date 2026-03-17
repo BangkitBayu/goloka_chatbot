@@ -21,9 +21,10 @@ export function createSessionRouter(controller: SessionController): Router {
    *         application/json:
    *           schema:
    *             type: object
-   *             required: [sessionId]
+   *             required: [phoneNumber, method]
    *             properties:
-   *               sessionId: { type: string }
+   *               phoneNumber: { type: string }
+   *               method: { type: string }
    *     responses:
    *       201: { description: Created }
    */

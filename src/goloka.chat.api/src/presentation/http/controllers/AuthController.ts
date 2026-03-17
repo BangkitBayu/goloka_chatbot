@@ -27,6 +27,12 @@ export class AuthController {
   };
 
   me = async (req: Request, res: Response): Promise<void> => {
+    // try {
+    //   const result = await this.getMe.execute(req.user?.userId);
+      
+    // } catch (error) {
+      
+    // }
     res.status(200).json({ success: true, data: req.user });
   };
 }

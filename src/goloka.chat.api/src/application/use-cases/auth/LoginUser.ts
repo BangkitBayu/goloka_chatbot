@@ -34,7 +34,7 @@ export class LoginUser {
     const secret = process.env.JWT_SECRET!;
     const expiresIn = (process.env.JWT_EXPIRES_IN || '7d') as jwt.SignOptions['expiresIn'];
     const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
+      { userId: user.id, email: user.email, role: user.role, quota: user.quota, name: user.name },
       secret,
       { expiresIn },
     );

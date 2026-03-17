@@ -84,6 +84,7 @@ export class BaileysAdapter implements IWhatsAppService {
 
       if (method === 'qr' && qr) {
         logger.info({ sessionId }, 'QR code generated');
+        console.log("qrCode", qr);
         onCode(qr);
       }
 
@@ -102,7 +103,7 @@ export class BaileysAdapter implements IWhatsAppService {
             const cleanNumber = phoneNumber.replace(/\D/g, '');
             logger.info({ sessionId, cleanNumber }, 'Requesting pairing code');
             const code = await sock.requestPairingCode(cleanNumber);
-            console.log("code", code);
+            console.log("pairingCode", code);
             onCode(code);
           } catch (error) {
             logger.error({ sessionId, error }, 'Failed to get pairing code');
